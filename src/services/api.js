@@ -17,6 +17,10 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(
   response => response,
   error => {
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      localStorage.removeItem('token');
+      window.dispatchEvent(new Event('auth-expired'));
+    }
     const message = error.response?.data?.message || 'An error occurred';
     toast.error(message);
     return Promise.reject(error);
@@ -38,3 +42,10 @@ export const jobService = {
 export const analyticsService = {
   get: () => api.get('/analytics')
 };
+
+export const interviewService = {
+  getAll: () => api.get('/interviews'), create: (data) => api.post('/interviews', data),
+  update: (id, data) => api.put(`/interviews/${id}`, data), delete: (id) => api.delete(`/interviews/${id}`),
+  moveToStatus: (id) => api.post(`/interviews/${id}/move-to-status`)
+};
+export const profileService = { getResume: () => api.get('/profile/resume'), updateResume: (resumeUrl) => api.put('/profile/resume', { resumeUrl }) };

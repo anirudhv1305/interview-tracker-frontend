@@ -8,6 +8,8 @@ const textPrimary = '#0F172A';
 const textSecondary = '#64748B';
 
 export const statusVisuals = {
+  PENDING: { label: 'Pending', color: '#F59E0B', chipColor: 'warning' },
+  SELECTED: { label: 'Selected', color: secondaryMain, chipColor: 'success' },
   APPLIED: {
     label: 'Applied',
     color: '#4F46E5',
@@ -50,14 +52,14 @@ const shadows = [
   ...Array(19).fill('0 20px 44px rgba(15, 23, 42, 0.12)')
 ];
 
-const theme = createTheme({
+export const makeTheme = (mode = 'light') => createTheme({
   spacing: 8,
   shape: {
     borderRadius: 16
   },
   shadows,
   palette: {
-    mode: 'light',
+    mode,
     primary: {
       main: primaryMain,
       light: '#818CF8',
@@ -71,12 +73,12 @@ const theme = createTheme({
       contrastText: '#052E16'
     },
     background: {
-      default: backgroundDefault,
-      paper: surfaceMain
+      default: mode === 'dark' ? '#0F172A' : backgroundDefault,
+      paper: mode === 'dark' ? '#172033' : surfaceMain
     },
     text: {
-      primary: textPrimary,
-      secondary: textSecondary
+      primary: mode === 'dark' ? '#F8FAFC' : textPrimary,
+      secondary: mode === 'dark' ? '#CBD5E1' : textSecondary
     },
     error: {
       main: '#EF4444',
@@ -102,7 +104,7 @@ const theme = createTheme({
       dark: '#15803D',
       contrastText: '#FFFFFF'
     },
-    divider: '#E2E8F0'
+    divider: mode === 'dark' ? '#334155' : '#E2E8F0'
   },
   typography: {
     fontFamily: '"Plus Jakarta Sans", "Segoe UI", sans-serif',
@@ -166,9 +168,13 @@ const theme = createTheme({
       styleOverrides: {
         body: {
           minHeight: '100vh',
-          color: textPrimary,
-          backgroundColor: backgroundDefault,
-          backgroundImage: `
+          color: mode === 'dark' ? '#F8FAFC' : textPrimary,
+          backgroundColor: mode === 'dark' ? '#0F172A' : backgroundDefault,
+          backgroundImage: mode === 'dark' ? `
+            radial-gradient(circle at top left, rgba(79, 70, 229, 0.18), transparent 28%),
+            radial-gradient(circle at top right, rgba(14, 165, 233, 0.12), transparent 25%),
+            linear-gradient(180deg, #0F172A 0%, #111827 100%)
+          ` : `
             radial-gradient(circle at top left, rgba(79, 70, 229, 0.10), transparent 26%),
             radial-gradient(circle at top right, rgba(34, 197, 94, 0.10), transparent 24%),
             linear-gradient(180deg, #F8FAFC 0%, #EEF4FF 100%)
@@ -188,7 +194,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          border: `1px solid ${alpha('#CBD5E1', 0.7)}`,
+          border: `1px solid ${alpha(mode === 'dark' ? '#475569' : '#CBD5E1', 0.7)}`,
           borderRadius: 20,
           boxShadow: shadows[2]
         }
@@ -269,7 +275,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 14,
-          backgroundColor: alpha(surfaceMain, 0.94),
+          backgroundColor: alpha(mode === 'dark' ? '#1E293B' : surfaceMain, 0.94),
           transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
           '&:hover .MuiOutlinedInput-notchedOutline': {
             borderColor: alpha(primaryMain, 0.48)
@@ -287,7 +293,7 @@ const theme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: textSecondary,
+          color: mode === 'dark' ? '#CBD5E1' : textSecondary,
           fontWeight: 500
         }
       }
@@ -304,10 +310,10 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          backgroundColor: alpha(surfaceMain, 0.82),
-          color: textPrimary,
+          backgroundColor: alpha(mode === 'dark' ? '#172033' : surfaceMain, 0.9),
+          color: mode === 'dark' ? '#F8FAFC' : textPrimary,
           backdropFilter: 'blur(16px)',
-          borderBottom: `1px solid ${alpha('#CBD5E1', 0.7)}`,
+          borderBottom: `1px solid ${alpha(mode === 'dark' ? '#475569' : '#CBD5E1', 0.7)}`,
           boxShadow: 'none'
         }
       }
@@ -328,7 +334,7 @@ const theme = createTheme({
       styleOverrides: {
         paper: {
           borderRadius: 20,
-          border: `1px solid ${alpha('#CBD5E1', 0.7)}`
+          border: `1px solid ${alpha(mode === 'dark' ? '#475569' : '#CBD5E1', 0.7)}`
         }
       }
     },
@@ -349,4 +355,5 @@ const theme = createTheme({
   }
 });
 
+const theme = makeTheme();
 export default theme;

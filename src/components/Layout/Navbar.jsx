@@ -1,109 +1,15 @@
-import React from 'react';
-import {
-  AppBar,
-  Box,
-  Button,
-  Chip,
-  Container,
-  Stack,
-  Toolbar,
-  Typography
-} from '@mui/material';
-import {
-  DashboardRounded as DashboardIcon,
-  LogoutRounded as LogoutIcon,
-  WorkOutlineRounded as WorkIcon
-} from '@mui/icons-material';
+import React, { useState } from 'react';
+import { AppBar, Box, Button, Container, Divider, Drawer, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Stack, Toolbar, Typography } from '@mui/material';
+import { DashboardRounded, DarkModeRounded, DescriptionRounded, EventRounded, LightModeRounded, LogoutRounded, MenuRounded, WorkOutlineRounded } from '@mui/icons-material';
 
-function Navbar({ onLogout, setView, currentView }) {
-  return (
-    <AppBar position="sticky">
-      <Container maxWidth="lg">
-        <Toolbar
-          disableGutters
-          sx={{
-            py: 1.5,
-            gap: 2,
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: { xs: 'stretch', md: 'center' }
-          }}
-        >
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ flexGrow: 1 }}>
-            <Box
-              sx={{
-                width: 42,
-                height: 42,
-                borderRadius: 3,
-                bgcolor: 'primary.main',
-                color: 'primary.contrastText',
-                display: 'grid',
-                placeItems: 'center',
-                boxShadow: '0 12px 24px rgba(79, 70, 229, 0.24)'
-              }}
-            >
-              <WorkIcon fontSize="small" />
-            </Box>
-            <Box>
-              <Typography variant="h6">Interview Tracker</Typography>
-              <Typography variant="body2" color="text.secondary">
-                Stay on top of every application stage
-              </Typography>
-            </Box>
-          </Stack>
-
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={1.25}
-            alignItems={{ xs: 'stretch', sm: 'center' }}
-          >
-            <Chip
-              label={currentView === 'dashboard' ? 'Dashboard view' : 'Jobs view'}
-              color="primary"
-              variant="outlined"
-              sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
-            />
-            <Box
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 1,
-                p: 0.75,
-                borderRadius: 4,
-                bgcolor: 'rgba(255,255,255,0.72)',
-                border: '1px solid',
-                borderColor: 'divider'
-              }}
-            >
-              <Button
-                color="primary"
-                startIcon={<DashboardIcon />}
-                onClick={() => setView('dashboard')}
-                variant={currentView === 'dashboard' ? 'contained' : 'text'}
-              >
-                Dashboard
-              </Button>
-              <Button
-                color="primary"
-                startIcon={<WorkIcon />}
-                onClick={() => setView('jobs')}
-                variant={currentView === 'jobs' ? 'contained' : 'text'}
-              >
-                Jobs
-              </Button>
-              <Button
-                color="error"
-                startIcon={<LogoutIcon />}
-                onClick={onLogout}
-                variant="outlined"
-              >
-                Logout
-              </Button>
-            </Box>
-          </Stack>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  );
+const nav = [{ key: 'dashboard', label: 'Dashboard', icon: DashboardRounded }, { key: 'status', label: 'Status', icon: WorkOutlineRounded }, { key: 'interviews', label: 'Interviews', icon: EventRounded }, { key: 'resume', label: 'Resume', icon: DescriptionRounded }];
+export default function Navbar({ onLogout, setView, currentView, darkMode, onToggleTheme }) {
+  const [open, setOpen] = useState(false); const go = view => { setView(view); setOpen(false); };
+  return <AppBar position="sticky"><Container maxWidth="lg"><Toolbar disableGutters sx={{ minHeight: 72, gap: 1.5 }}>
+    <Stack direction="row" spacing={1.25} alignItems="center" sx={{ flexGrow: 1, minWidth: 0 }}><Box sx={{ width: 40, height: 40, borderRadius: 2.5, bgcolor: 'primary.main', color: 'primary.contrastText', display: 'grid', placeItems: 'center', flexShrink: 0 }}><WorkOutlineRounded /></Box><Box sx={{ minWidth: 0 }}><Typography variant="h6" noWrap>Interview Tracker</Typography><Typography variant="caption" color="text.secondary" noWrap>Placement command center</Typography></Box></Stack>
+    <Stack direction="row" spacing={.5} sx={{ display: { xs: 'none', md: 'flex' } }}>{nav.map(({ key, label, icon: Icon }) => <Button key={key} startIcon={<Icon />} variant={currentView === key ? 'contained' : 'text'} onClick={() => go(key)}>{label}</Button>)}</Stack>
+    <IconButton aria-label="Toggle dark mode" onClick={onToggleTheme}>{darkMode ? <LightModeRounded /> : <DarkModeRounded />}</IconButton><Button color="error" variant="outlined" startIcon={<LogoutRounded />} onClick={onLogout} sx={{ display: { xs: 'none', sm: 'inline-flex' } }}>Logout</Button><IconButton aria-label="Open navigation" onClick={() => setOpen(true)} sx={{ display: { md: 'none' } }}><MenuRounded /></IconButton>
+  </Toolbar></Container>
+  <Drawer anchor="right" open={open} onClose={() => setOpen(false)} PaperProps={{ sx: { width: 280, p: 1 } }}><Stack direction="row" alignItems="center" spacing={1} sx={{ p: 2 }}><Box sx={{ width: 34, height: 34, borderRadius: 2, bgcolor: 'primary.main', color: 'primary.contrastText', display: 'grid', placeItems: 'center' }}><WorkOutlineRounded fontSize="small" /></Box><Typography variant="h6">Menu</Typography></Stack><Divider /><List>{nav.map(({ key, label, icon: Icon }) => <ListItemButton key={key} selected={currentView === key} onClick={() => go(key)}><ListItemIcon><Icon color={currentView === key ? 'primary' : 'inherit'} /></ListItemIcon><ListItemText primary={label} /></ListItemButton>)}</List><Divider sx={{ mt: 'auto' }} /><Button color="error" startIcon={<LogoutRounded />} onClick={onLogout} sx={{ m: 1.5, justifyContent: 'flex-start' }}>Logout</Button></Drawer>
+  </AppBar>;
 }
-
-export default Navbar;

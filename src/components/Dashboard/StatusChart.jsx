@@ -1,10 +1,12 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import SectionCard from '../UI/SectionCard';
 import { statusVisuals } from '../../theme';
 
 function StatusChart({ statusCounts }) {
+  const theme = useTheme();
   const data = Object.entries(statusCounts)
     .filter(([_, count]) => count > 0)
     .map(([status, count]) => ({
@@ -42,6 +44,7 @@ function StatusChart({ statusCounts }) {
               cy="50%"
               labelLine={false}
               label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              labelStyle={{ fill: theme.palette.text.primary, fontSize: 14, fontWeight: 600 }}
               outerRadius={92}
               innerRadius={50}
               dataKey="value"
@@ -53,8 +56,13 @@ function StatusChart({ statusCounts }) {
                 />
               ))}
             </Pie>
-            <Tooltip formatter={(value) => [value, 'Applications']} />
-            <Legend />
+            <Tooltip
+              contentStyle={{ background: theme.palette.background.paper, border: `1px solid ${theme.palette.divider}`, borderRadius: 12 }}
+              labelStyle={{ color: theme.palette.text.primary, fontWeight: 700 }}
+              itemStyle={{ color: theme.palette.text.primary }}
+              formatter={(value) => [value, 'Applications']}
+            />
+            <Legend wrapperStyle={{ color: theme.palette.text.primary, fontSize: 14 }} />
           </PieChart>
         </ResponsiveContainer>
       </Box>
