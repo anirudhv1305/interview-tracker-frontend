@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AppBar, Box, Button, Container, Divider, Drawer, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Stack, Toolbar, Typography } from '@mui/material';
 import { DashboardRounded, DarkModeRounded, DescriptionRounded, EventRounded, LightModeRounded, LogoutRounded, MenuRounded, WorkOutlineRounded } from '@mui/icons-material';
 
-const nav = [{ key: 'dashboard', label: 'Dashboard', icon: DashboardRounded }, { key: 'status', label: 'Status', icon: WorkOutlineRounded }, { key: 'interviews', label: 'Interviews', icon: EventRounded }, { key: 'resume', label: 'Resume', icon: DescriptionRounded }];
+const nav = [{ key: 'dashboard', label: 'Dashboard', icon: DashboardRounded }, { key: 'status', label: 'Applications', icon: WorkOutlineRounded }, { key: 'interviews', label: 'Interviews', icon: EventRounded }, { key: 'resume', label: 'Resume', icon: DescriptionRounded }];
 export default function Navbar({ onLogout, setView, currentView, darkMode, onToggleTheme }) {
   const [open, setOpen] = useState(false); const go = view => { setView(view); setOpen(false); };
   return <AppBar position="sticky"><Container maxWidth="lg"><Toolbar disableGutters sx={{ minHeight: 72, gap: 1.5 }}>
