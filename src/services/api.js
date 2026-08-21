@@ -48,4 +48,9 @@ export const interviewService = {
   update: (id, data) => api.put(`/interviews/${id}`, data), delete: (id) => api.delete(`/interviews/${id}`),
   moveToStatus: (id) => api.post(`/interviews/${id}/move-to-status`)
 };
-export const profileService = { getResume: () => api.get('/profile/resume'), updateResume: (resumeUrl) => api.put('/profile/resume', { resumeUrl }) };
+export const profileService = {
+  getResume: () => api.get('/profile/resume'),
+  updateResume: (resumeUrl) => api.put('/profile/resume', { resumeUrl }),
+  uploadResume: (file) => { const data = new FormData(); data.append('file', file); return api.post('/profile/resume/upload', data, { headers: { 'Content-Type': 'multipart/form-data' } }); },
+  getUploadedResume: () => api.get('/profile/resume/file', { responseType: 'blob' })
+};

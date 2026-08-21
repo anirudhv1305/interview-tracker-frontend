@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, IconButton, InputLabel, MenuItem, Select, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, IconButton, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { AddRounded, CheckCircleRounded, CloseRounded, DeleteRounded, EditRounded, RadioButtonCheckedRounded, RadioButtonUncheckedRounded, ScheduleRounded, SearchRounded, UpdateRounded } from '@mui/icons-material';
 import { interviewService, jobService } from '../../services/api';
 import PageHeader from '../UI/PageHeader';
@@ -7,7 +7,7 @@ import RoundBuilder from '../UI/RoundBuilder';
 import SectionCard from '../UI/SectionCard';
 import RoundTimeline from '../UI/RoundTimeline';
 
-const blank = { companyName: '', role: '', appliedDate: new Date().toISOString().slice(0, 10), status: 'PENDING', totalRounds: 1, currentRoundNumber: 1, currentRoundName: '', plannedRounds: [''], notes: '' };
+const blank = { companyName: '', role: '', appliedDate: new Date().toISOString().slice(0, 10), status: 'PENDING', totalRounds: '', currentRoundNumber: 1, currentRoundName: '', plannedRounds: [], notes: '' };
 const label = status => status === 'SELECTED' || status === 'OFFERED' ? 'Selected' : status === 'REJECTED' ? 'Rejected' : 'Pending';
 const isDue = interview => new Date(`${interview.interviewDate}T${interview.interviewTime || '00:00'}`) <= new Date();
 
@@ -17,7 +17,7 @@ function Progress({ application }) {
     const done = label(application.status) === 'Selected' || number < (application.currentRoundNumber || 1);
     const current = number === (application.currentRoundNumber || 1) && label(application.status) === 'Pending';
     const rejected = number === (application.currentRoundNumber || 1) && label(application.status) === 'Rejected';
-    const round = number === (application.currentRoundNumber || 1) ? application.currentRoundName : (application.plannedRounds?.[index] || names[index] || `Round ${number}`);
+    const round = number === (application.currentRoundNumber || 1) ? application.currentRoundName : (application.plannedRounds?.[index] || `Round ${number}`);
     return <Stack key={number} direction="row" spacing={1} alignItems="center">
       {done ? <CheckCircleRounded color="success" /> : current ? <RadioButtonCheckedRounded color="primary" /> : rejected ? <CloseRounded color="error" /> : <RadioButtonUncheckedRounded color="disabled" />}
       <Typography>{round}</Typography><Typography variant="caption" color="text.secondary">{done ? 'Cleared' : rejected ? 'Rejected' : current ? 'Current' : 'Upcoming'}</Typography>
@@ -40,7 +40,7 @@ export default function Status({ onChanged }) {
   return <Stack spacing={3}>
     <PageHeader title="Applications" description="Track applications and recruitment progress." actions={<Button variant="contained" startIcon={<AddRounded />} onClick={() => { setChosen(null); setForm(blank); setEdit(true); }}>Add application</Button>} />
     {error && <Alert severity="error" action={<Button color="inherit" onClick={load}>Try again</Button>}>{error}</Alert>}
-    <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} justifyContent="space-between"><ToggleButtonGroup exclusive value={filter} onChange={(_, value) => value && setFilter(value)} size="small" aria-label="Application status filter"><ToggleButton value="ALL">All</ToggleButton><ToggleButton value="PENDING">Pending</ToggleButton><ToggleButton value="SELECTED">Selected</ToggleButton><ToggleButton value="REJECTED">Rejected</ToggleButton></ToggleButtonGroup><TextField size="small" placeholder="Search companies or roles" value={query} onChange={event => setQuery(event.target.value)} InputProps={{ startAdornment: <SearchRounded fontSize="small" color="action" sx={{ mr: 1 }} /> }} sx={{ minWidth: { md: 280 } }} /></Stack>
+    <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} justifyContent="space-between"><Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" aria-label="Application status filter">{[['ALL','All'],['PENDING','Pending'],['SELECTED','Selected'],['REJECTED','Rejected']].map(([value,text])=><Button key={value} size="small" variant={filter===value?'contained':'outlined'} color={value==='SELECTED'?'success':value==='REJECTED'?'error':value==='PENDING'?'warning':'primary'} onClick={()=>setFilter(value)} sx={{ minHeight: 36, px: 1.75, borderRadius: 99 }}>{text}</Button>)}</Stack><TextField size="small" placeholder="Search companies or roles" value={query} onChange={event => setQuery(event.target.value)} InputProps={{ startAdornment: <SearchRounded fontSize="small" color="action" sx={{ mr: 1 }} /> }} sx={{ minWidth: { md: 280 } }} /></Stack>
     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 2 }}>
       {visible.map(item => {
         const interview = scheduleFor(item); const due = interview && isDue(interview);
